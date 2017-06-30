@@ -1,30 +1,26 @@
-﻿using System;
+﻿using RotasMVC.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace RotasMVC.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IEnumerable<Noticia> todasAsNoticias;
+        
+        public HomeController()
+        {
+            todasAsNoticias = new Noticia().TodasAsNoticias().OrderByDescending(x => x.Data);
+        }
         public ActionResult Index()
         {
-            return View();
-        }
+            var ultimasNoticias = todasAsNoticias.Take(3);
 
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
+            var todasAsCategorias = todasAsNoticias.Select(x => x.Categoria).Distinct().ToList();
 
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+            ViewBag.Categorias = todasAsCategorias;
+            return View(ultimasNoticias);
         }
     }
 }
